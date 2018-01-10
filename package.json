@@ -4,9 +4,18 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
-    "prettier": "^1.9.2"
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "node-sass": "^4.7.2",
+    "parcel-bundler": "^1.4.1",
+    "prettier": "^1.9.2",
+    "rimraf": "^2.6.2"
   },
   "scripts": {
-    "prettier": "prettier --write \"./**/*.{js,css,json}\" package.json"
+    "build": "npm run clean && parcel build index.html --public-url ./",
+    "clean": "rimraf dist",
+    "prettier": "prettier --write \"./**/*.{js,css,json}\" package.json",
+    "start": "parcel index.html"
   }
 }
