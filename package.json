@@ -15,7 +15,7 @@
   "scripts": {
     "build": "npm run clean && parcel build index.html --public-url ./",
     "clean": "rimraf dist",
-    "prettier": "prettier --write \"./**/*.{js,css,json}\" package.json",
+    "prettier": "prettier --write \"./src/**/*.{js,css,json}\" package.json",
     "start": "npm run clean && parcel index.html"
   }
 }

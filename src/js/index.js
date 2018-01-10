@@ -1,17 +1,14 @@
-import {getHighscore,setHighscore} from "./storage";
-import {Colors, BackgroundColor} from "./colors";
-import {Pieces} from "./pieces";
+import {updateScore} from "./score";
+import { randomPiece } from "./pieces";
+import { draw } from "./drawing";
 import "../css/style.scss";
-
-const canvas = document.getElementById("game");
-const context = canvas.getContext("2d");
-
-context.scale(20, 20);
-
-let highscore = getHighscore();
 
 const RotateLeft = -1;
 const RotateRight = 1;
+
+let timestamp = 0;
+let dropCounter = 0;
+let dropSpeed = 500;
 
 const _sweep = () => {
   let rowCount = 1;
@@ -29,27 +26,15 @@ const _sweep = () => {
   }
 };
 
-const _randomPiece = () =>
-  Object.values(Pieces)[(Object.keys(Pieces).length * Math.random()) | 0];
-
 const _playerReset = () => {
-  player.matrix = _randomPiece();
+  player.matrix = randomPiece();
   player.pos.y = 0;
   player.pos.x =
     ((arena[0].length / 2) | 0) - ((player.matrix[0].length / 2) | 0);
   if (_collide(arena, player)) {
     arena.forEach(row => row.fill(0));
     player.score = 0;
-    _updateScore();
-  }
-};
-
-const _updateScore = () => {
-  document.getElementById("score").innerText = String(player.score);
-  document.getElementById("highscore").innerText = String(highscore);
-  if (player.score > highscore) {
-    highscore = player.score;
-    setHighscore(highscore);
+    updateScore(player);
   }
 };
 
@@ -71,23 +56,6 @@ const _createMatrix = (w, h) => {
     matrix.push(new Array(w).fill(0));
   }
   return matrix;
-};
-const _draw = () => {
-  context.fillStyle = BackgroundColor;
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  _drawMatrix(player.matrix, player.pos);
-  _drawMatrix(arena);
-};
-
-const _drawMatrix = (matrix, offset = { x: 0, y: 0 }) => {
-  matrix.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value !== 0) {
-        context.fillStyle = Colors[value];
-        context.fillRect(x + offset.x, y + offset.y, 1, 1);
-      }
-    });
-  });
 };
 
 const _movePiece = dx => {
@@ -124,9 +92,6 @@ const _rotatePiece = d => {
   }
 };
 
-let dropCounter = 0;
-let dropSpeed = 1000;
-
 const _drop = () => {
   player.pos.y++;
   if (_collide(arena, player)) {
@@ -135,12 +100,11 @@ const _drop = () => {
     player.pos.y = 0;
     _playerReset();
     _sweep();
-    _updateScore();
+    updateScore(player);
   }
   dropCounter = 0;
 };
 
-let timestamp = 0;
 const _update = (time = 0) => {
   const delta = time - timestamp;
   timestamp = time;
@@ -148,7 +112,7 @@ const _update = (time = 0) => {
   if (dropCounter > dropSpeed) {
     _drop();
   }
-  _draw();
+  draw(player, arena);
   requestAnimationFrame(_update);
 };
 
@@ -193,5 +157,5 @@ document.addEventListener("keydown", event => {
 });
 
 _playerReset();
-_updateScore();
+updateScore(player);
 _update();
