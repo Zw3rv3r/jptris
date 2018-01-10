@@ -1,7 +1,13 @@
 const canvas = document.getElementById("game");
 const context = canvas.getContext("2d");
 
+const HighscoreKey = "__highscore";
+
 context.scale(20, 20);
+
+let highscore = window.localStorage.getItem(HighscoreKey) || 0;
+
+console.log("setting highscore to ", highscore);
 
 const RotateLeft = -1;
 const RotateRight = 1;
@@ -31,11 +37,11 @@ const _sweep = () => {
   let rowCount = 1;
   outer: for (let y = arena.length - 1; y > 0; y--) {
     for (let x = 0; x < arena[y].length; x++) {
-      if(arena[y][x] === 0) {
+      if (arena[y][x] === 0) {
         continue outer;
       }
     }
-    const row = arena.splice(y,1)[0].fill(0);
+    const row = arena.splice(y, 1)[0].fill(0);
     arena.unshift(row);
     player.score += rowCount * 10;
     rowCount *= 2;
@@ -60,6 +66,11 @@ const _playerReset = () => {
 
 const _updateScore = () => {
   document.getElementById("score").innerText = player.score;
+  document.getElementById("highscore").innerText = highscore;
+  if (player.score > highscore) {
+    highscore = player.score;
+    window.localStorage.setItem(HighscoreKey, highscore);
+  }
 };
 
 const _collide = (field, piece) => {
@@ -82,7 +93,7 @@ const _createMatrix = (w, h) => {
   return matrix;
 };
 const _draw = () => {
-  context.fillStyle = "#000";
+  context.fillStyle = "#69f";
   context.fillRect(0, 0, canvas.width, canvas.height);
   _drawMatrix(player.matrix, player.pos);
   _drawMatrix(arena);
@@ -179,7 +190,6 @@ const player = {
 const arena = _createMatrix(12, 20); // classic tetris
 
 document.addEventListener("keydown", event => {
-  console.log(event.keyCode);
   switch (event.keyCode) {
     case 37: // ArrowLeft
       _movePiece(-1);
