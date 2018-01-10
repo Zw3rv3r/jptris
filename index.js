@@ -187,15 +187,16 @@ document.addEventListener("keydown", event => {
     case 39: // ArrowRight
       _movePiece(1);
       break;
-    case 32: // space
-    case 40: // ArrowDown
-      _drop();
-      break;
     case 81: // Q
+    case 38: // ArrowUp
       _rotatePiece(RotateLeft);
       break;
     case 87: // W
+    case 40: // ArrowDown
       _rotatePiece(RotateRight);
+      break;
+    case 32: // space
+      _drop();
       break;
     default:
   }
