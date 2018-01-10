@@ -1,0 +1,12 @@
+{
+  "name": "jptris",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^1.9.2"
+  },
+  "scripts": {
+    "prettier": "prettier --write \"./**/*.{js,css,json}\" package.json"
+  }
+}
