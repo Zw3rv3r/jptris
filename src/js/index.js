@@ -1,39 +1,17 @@
+import {getHighscore,setHighscore} from "./storage";
+import {Colors, BackgroundColor} from "./colors";
+import {Pieces} from "./pieces";
 import "../css/style.scss";
 
 const canvas = document.getElementById("game");
 const context = canvas.getContext("2d");
 
-const HighscoreKey = "__highscore";
-
 context.scale(20, 20);
 
-let highscore = window.localStorage.getItem(HighscoreKey) || 0;
-
-console.log("setting highscore to ", highscore);
+let highscore = getHighscore();
 
 const RotateLeft = -1;
 const RotateRight = 1;
-
-const Colors = [
-  "black",
-  "red",
-  "blue",
-  "violet",
-  "green",
-  "orange",
-  "yellow",
-  "pink"
-];
-
-const Pieces = {
-  T: [[0, 0, 0], [1, 1, 1], [0, 1, 0]],
-  O: [[2, 2], [2, 2]],
-  S: [[0, 3, 3], [3, 3, 0], [0, 0, 0]],
-  Z: [[4, 4, 0], [0, 4, 4], [0, 0, 0]],
-  L: [[0, 5, 0], [0, 5, 0], [0, 5, 5]],
-  J: [[0, 6, 0], [0, 6, 0], [6, 6, 0]],
-  I: [[0, 7, 0, 0], [0, 7, 0, 0], [0, 7, 0, 0], [0, 7, 0, 0]]
-};
 
 const _sweep = () => {
   let rowCount = 1;
@@ -67,11 +45,11 @@ const _playerReset = () => {
 };
 
 const _updateScore = () => {
-  document.getElementById("score").innerText = player.score;
-  document.getElementById("highscore").innerText = highscore;
+  document.getElementById("score").innerText = String(player.score);
+  document.getElementById("highscore").innerText = String(highscore);
   if (player.score > highscore) {
     highscore = player.score;
-    window.localStorage.setItem(HighscoreKey, highscore);
+    setHighscore(highscore);
   }
 };
 
@@ -95,7 +73,7 @@ const _createMatrix = (w, h) => {
   return matrix;
 };
 const _draw = () => {
-  context.fillStyle = "#69f";
+  context.fillStyle = BackgroundColor;
   context.fillRect(0, 0, canvas.width, canvas.height);
   _drawMatrix(player.matrix, player.pos);
   _drawMatrix(arena);
